@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+              android:id="@+id/linearlayout1"
     android:paddingTop="8dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
@@ -24,7 +25,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/status"
-        android:text="yep"
         android:textColor="#e6ffffff"
         android:textAlignment="center"
         android:textSize="150sp"
@@ -42,7 +42,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/weatherSummary_text"
-        android:text="Light Rain Showers"
         android:textColor="#e6ffffff"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -78,7 +77,7 @@
         android:shadowDy="1"
         android:shadowRadius="15"
         android:shadowColor="#ff000000" />
-    <Button
+    <!--<Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/get_address_button"
@@ -88,5 +87,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/address_text"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp" />-->
 </LinearLayout>

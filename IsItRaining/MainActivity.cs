@@ -11,6 +11,7 @@ using System.Text;
 using OpenWeatherMap;
 using DarkSkyApi;
 using ME.Grantland.Widget;
+using IsItRaining.Includes;
 
 namespace IsItRaining
 {
@@ -27,6 +28,7 @@ namespace IsItRaining
         TextView weatherStatus;
         TextView rainingOrNot;
         TextView currentTempurature;
+        LinearLayout linearlayout;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -34,18 +36,19 @@ namespace IsItRaining
 
             SetContentView (Resource.Layout.Main);
 
-            
+            StartService(new Android.Content.Intent(this, typeof(LocationService)));
 
-            _addressText = FindViewById<TextView>(Resource.Id.address_text);
+            //_addressText = FindViewById<TextView>(Resource.Id.address_text);
 
             weatherStatus = FindViewById<TextView>(Resource.Id.weatherSummary_text);
             rainingOrNot = FindViewById<TextView>(Resource.Id.status);
             currentTempurature = FindViewById<TextView>(Resource.Id.tempurature_text);
+            linearlayout = FindViewById<LinearLayout>(Resource.Id.linearlayout1);
 
             //FindViewById<TextView>(Resource.Id.get_address_button).Click += AddressButton_OnClick;
 
 
-            InitializeLocationManager();
+            //InitializeLocationManager();
 
         }
 
@@ -138,9 +141,11 @@ namespace IsItRaining
 
             var request = dk.GetWeatherDataAsync(latitde, longitude);
 
-            SetStatus(request.Result.Hourly.Icon);
+            SetStatus(request.Result.Currently.Icon);
 
-            weatherStatus.Text = request.Result.Hourly.Summary;
+            weatherStatus.Text = request.Result.Minutely.Summary;
+
+            DisplayAccurateImage(request.Result.Minutely.Icon);
 
             if (request.Result.TimeZone.Contains("America"))
             {
@@ -159,6 +164,42 @@ namespace IsItRaining
         private void DisplayAccurateImage(string summary)
         {
             var currentTime = DateTime.Now;
+
+            switch (summary)
+            {
+                case "clear-day":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "clear-night":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    break;
+                case "rain":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    break;
+                case "snow":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "sleet":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "wind":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "fog":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "cloudy":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    break;
+                case "partly-cloudy-day":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    break;
+                case "partly-cloudy-night":
+                    linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void SetStatus(string summary)
@@ -176,13 +217,13 @@ namespace IsItRaining
         protected override void OnResume()
         {
             base.OnResume();
-            _locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+            //_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            _locationManager.RemoveUpdates(this);
+            //_locationManager.RemoveUpdates(this);
         }
 
         public void OnProviderDisabled(string provider)
