@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <group android:id="@+id/grp1" android:checkableBehavior="single" >
+    <item android:id="@+id/action_edit"
+          android:title="Notifications"
+	      />
+  </group>
+
+  <group android:id="@+id/grp3" android:checkableBehavior="single" >
+    <item android:id="@+id/attribution"
+          android:title="Attribution"
+	      />
+    <item android:id="@+id/feedback"
+     android:title="App feedback"/>
+  </group>
+</menu>

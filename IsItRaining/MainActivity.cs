@@ -12,29 +12,37 @@ using OpenWeatherMap;
 using DarkSkyApi;
 using ME.Grantland.Widget;
 using IsItRaining.Includes;
+using Android.Support.V7.App;
 
 namespace IsItRaining
 {
     [Activity(Label = "Is It Raining?", MainLauncher = true, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
-    public class MainActivity : Activity, ILocationListener
+    public class MainActivity : AppCompatActivity, ILocationListener
     {
-        //static readonly string TAG = "X:" + typeof(Activity1).Name;
+        private Android.Support.V7.Widget.Toolbar toolBar;
         TextView _addressText;
         static Android.Locations.Location _currentLocation;
         static LocationManager _locationManager;
         
+
         string _locationProvider;
 
         TextView weatherStatus;
         TextView rainingOrNot;
         TextView currentTempurature;
-        LinearLayout linearlayout;
+        FrameLayout linearlayout;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
             SetContentView (Resource.Layout.Main);
+
+
+            toolBar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.include_toolbar);
+            toolBar.BringToFront();
+            SetSupportActionBar(toolBar);
+            
 
             StartService(new Android.Content.Intent(this, typeof(LocationService)));
 
@@ -43,7 +51,7 @@ namespace IsItRaining
             weatherStatus = FindViewById<TextView>(Resource.Id.weatherSummary_text);
             rainingOrNot = FindViewById<TextView>(Resource.Id.status);
             currentTempurature = FindViewById<TextView>(Resource.Id.tempurature_text);
-            linearlayout = FindViewById<LinearLayout>(Resource.Id.linearlayout1);
+            linearlayout = FindViewById<FrameLayout>(Resource.Id.linearlayout1);
 
             //FindViewById<TextView>(Resource.Id.get_address_button).Click += AddressButton_OnClick;
 
