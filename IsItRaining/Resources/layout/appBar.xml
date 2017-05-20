@@ -1,22 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout         xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+  <android.support.v7.widget.Toolbar
 
-<android.support.v7.widget.Toolbar
-      xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:id="@+id/custom_toolBar"
-android:layout_width="match_parent"
-android:layout_height="?android:attr/actionBarSize"
-android:minHeight="?android:attr/actionBarSize"
-      android:background="#593C316E">
+  android:id="@+id/custom_toolBar"
+  android:layout_width="match_parent"
+  android:layout_height="?android:attr/actionBarSize"
+  android:minHeight="?android:attr/actionBarSize"
+                app:contentInsetEnd="0dp"
+          app:contentInsetStart="0dp"
+        android:background="#593C316E">
 
-  <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ApplicationName"
-        android:id="@+id/title"
-        android:textColor="#80ffffff"
-        android:textSize="22dp"
-        android:gravity="center"/>
-</android.support.v7.widget.Toolbar>
+    <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/ApplicationName"
+          android:id="@+id/title"
+          android:textColor="#80ffffff"
+          android:textSize="22dp"
+          android:layout_gravity="center_horizontal"/>
+  </android.support.v7.widget.Toolbar>
+</LinearLayout>
 
 
