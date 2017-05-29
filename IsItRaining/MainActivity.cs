@@ -18,6 +18,9 @@ using Android.Support.V4.Widget;
 using Android.Animation;
 using Android.Views.Animations;
 using Android.Gms.Ads;
+using static Android.Views.Animations.Animation;
+using Java.IO;
+using System.IO;
 
 namespace IsItRaining
 {
@@ -33,6 +36,7 @@ namespace IsItRaining
 
         string _locationProvider;
 
+        TextView tstData;
         TextView weatherStatus;
         TextView rainingOrNot;
         TextView currentTempurature;
@@ -48,8 +52,10 @@ namespace IsItRaining
             //toolbar_container = FindViewById<LinearLayout>(Resource.Id.toolbar_container);
             MobileAds.Initialize(this, "ca-app-pub-2637596544494423~2520806396");
 
-            adView = FindViewById<AdView>(Resource.Id.adView);
+            //adView = FindViewById<AdView>(Resource.Id.adView);
             toolBar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.custom_toolBar);
+            tstData = FindViewById<TextView>(Resource.Id.testData);
+
             SetSupportActionBar(toolBar);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
             SupportActionBar.SetDisplayShowTitleEnabled(false);
@@ -58,7 +64,31 @@ namespace IsItRaining
 
             AdRequest adRequest = new AdRequest.Builder().AddTestDevice("Samsung-SM-N900A").Build();
 
-            adView.LoadAd(adRequest);
+            //adView.LoadAd(adRequest);
+
+            if (fileExistance("test.txt"))
+            {
+                try
+                {
+                    Stream filein = OpenFileInput("test.txt");
+                    StreamReader io = new StreamReader(filein);
+                    tstData.Text = io.ReadToEnd();
+                    io.Close();
+                }
+                catch(Exception e)
+                {
+                    
+                }
+            }
+            else
+            {
+                Stream fileout = OpenFileOutput("test.txt", Android.Content.FileCreationMode.Private);
+                StreamWriter opWriter = new StreamWriter(fileout);
+                opWriter.Write("This is a test");
+                opWriter.Close();
+
+            }
+
 
             //_addressText = FindViewById<TextView>(Resource.Id.address_text);
 
@@ -75,6 +105,14 @@ namespace IsItRaining
 
             InitializeLocationManager();
 
+        }
+
+        public bool fileExistance(string fname)
+        {
+            Java.IO.File file = BaseContext.GetFileStreamPath(fname);
+            
+            var h = file.AbsolutePath;
+            return file.Exists();
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -178,13 +216,21 @@ namespace IsItRaining
             {
                 DarkSkyService dk = new DarkSkyService("689a0d61985dfd4dae9cb86f67dcad79");
 
+
                 var request = dk.GetWeatherDataAsync(latitde, longitude);
+
+                foreach(var hrs in request.Result.Hourly.Hours)
+                {
+                    //hrs.
+                }
+
+                DisplayAccurateImage(request.Result.Minutely.Icon);
 
                 SetStatus(request.Result.Currently.Icon);
 
                 weatherStatus.Text = request.Result.Minutely.Summary;
 
-                DisplayAccurateImage(request.Result.Minutely.Icon);
+                
 
                 if (request.Result.TimeZone.Contains("America"))
                 {
@@ -209,39 +255,59 @@ namespace IsItRaining
             switch (summary)
             {
                 case "clear-day":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    AnimateImages();
                     break;
                 case "clear-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
-                    break;
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_night);
+                    AnimateImages();
+                    break; 
                 case "rain":
                     linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    AnimateImages();
                     break;
                 case "snow":
                     linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    AnimateImages();
                     break;
                 case "sleet":
                     linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    AnimateImages();
                     break;
                 case "wind":
                     linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    AnimateImages();
                     break;
                 case "fog":
                     linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    AnimateImages();
                     break;
                 case "cloudy":
                     linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    AnimateImages();
                     break;
                 case "partly-cloudy-day":
                     linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    AnimateImages();
                     break;
                 case "partly-cloudy-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    AnimateImages();
                     break;
                 default:
                     break;
             }
         }
+
+        private void AnimateImages()
+        {
+            Animation fadeIn = AnimationUtils.LoadAnimation(this, Resource.Animation.fade_in);
+            linearlayout.StartAnimation(fadeIn);
+
+            fadeIn.SetAnimationListener(new AnimationListener(this, linearlayout));
+        }
+
+        
 
         private void SetStatus(string summary)
         {
