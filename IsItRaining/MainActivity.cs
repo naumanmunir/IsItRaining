@@ -21,6 +21,8 @@ using Android.Gms.Ads;
 using static Android.Views.Animations.Animation;
 using Java.IO;
 using System.IO;
+using Android.Content;
+using Android.Support.Design.Widget;
 
 namespace IsItRaining
 {
@@ -28,7 +30,6 @@ namespace IsItRaining
     public class MainActivity : AppCompatActivity, ILocationListener
     {
         private Android.Support.V7.Widget.Toolbar toolBar;
-        TextView _addressText;
         static Android.Locations.Location _currentLocation;
         static LocationManager _locationManager;
 
@@ -36,25 +37,24 @@ namespace IsItRaining
 
         string _locationProvider;
 
-        TextView tstData;
         TextView weatherStatus;
         TextView rainingOrNot;
         TextView currentTempurature;
         LinearLayout linearlayout;
-        private DrawerLayout drawerLayout;
+        NavigationView navView;
+        public DrawerLayout drawerLayout;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
             SetContentView (Resource.Layout.Main);
-
+            
             //toolbar_container = FindViewById<LinearLayout>(Resource.Id.toolbar_container);
             MobileAds.Initialize(this, "ca-app-pub-2637596544494423~2520806396");
 
-            //adView = FindViewById<AdView>(Resource.Id.adView);
+            adView = FindViewById<AdView>(Resource.Id.adView);
             toolBar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.custom_toolBar);
-            tstData = FindViewById<TextView>(Resource.Id.testData);
 
             SetSupportActionBar(toolBar);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
@@ -64,56 +64,62 @@ namespace IsItRaining
 
             AdRequest adRequest = new AdRequest.Builder().AddTestDevice("Samsung-SM-N900A").Build();
 
-            //adView.LoadAd(adRequest);
+            adView.LoadAd(adRequest);
 
-            if (fileExistance("test.txt"))
-            {
-                try
-                {
-                    Stream filein = OpenFileInput("test.txt");
-                    StreamReader io = new StreamReader(filein);
-                    tstData.Text = io.ReadToEnd();
-                    io.Close();
-                }
-                catch(Exception e)
-                {
-                    
-                }
-            }
-            else
-            {
-                Stream fileout = OpenFileOutput("test.txt", Android.Content.FileCreationMode.Private);
-                StreamWriter opWriter = new StreamWriter(fileout);
-                opWriter.Write("This is a test");
-                opWriter.Close();
-
-            }
-
-
-            //_addressText = FindViewById<TextView>(Resource.Id.address_text);
-
+            navView = FindViewById<NavigationView>(Resource.Id.nav_view);
             weatherStatus = FindViewById<TextView>(Resource.Id.weatherSummary_text);
             rainingOrNot = FindViewById<TextView>(Resource.Id.status);
             currentTempurature = FindViewById<TextView>(Resource.Id.tempurature_text);
             linearlayout = FindViewById<LinearLayout>(Resource.Id.linearlayout1);
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
 
-            //FindViewById<TextView>(Resource.Id.get_address_button).Click += AddressButton_OnClick;
-
-            //StartService(new Android.Content.Intent(this, typeof(LocationService)));
-            //GetCurrentWeather(GPSData.Latitude, GPSData.Longitude);
+            SetUpNavigationView();
 
             InitializeLocationManager();
 
         }
 
-        public bool fileExistance(string fname)
+        //public void SaveWeatherData()
+        //{
+        //    if (fileExistance("test.txt"))
+        //    {
+        //        try
+        //        {
+        //            Stream filein = OpenFileInput("test.txt");
+        //            StreamReader io = new StreamReader(filein);
+        //            tstData.Text = io.ReadToEnd();
+        //            io.Close();
+        //        }
+        //        catch (Exception e)
+        //        {
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Stream fileout = OpenFileOutput("test.txt", Android.Content.FileCreationMode.Private);
+        //        StreamWriter opWriter = new StreamWriter(fileout);
+        //        opWriter.Write("This is a test");
+        //        opWriter.Close();
+
+        //    }
+        //}
+
+        //public bool fileExistance(string fname)
+        //{
+        //    Java.IO.File file = BaseContext.GetFileStreamPath(fname);
+
+        //    var h = file.AbsolutePath;
+        //    return file.Exists();
+        //}
+
+        private void SetUpNavigationView()
         {
-            Java.IO.File file = BaseContext.GetFileStreamPath(fname);
+            navView.SetNavigationItemSelectedListener(new NavigationListener(this));
             
-            var h = file.AbsolutePath;
-            return file.Exists();
         }
+
+        
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
@@ -130,7 +136,7 @@ namespace IsItRaining
         private void InitializeLocationManager()
         {
             _locationManager = (LocationManager)GetSystemService(LocationService);
-
+             
             Criteria criteriaForLocationService = new Criteria
             {
                 Accuracy = Android.Locations.Accuracy.Fine
@@ -143,27 +149,23 @@ namespace IsItRaining
                 _locationProvider = acceptableLocationProviders.First();
 
 
-                //_locationManager.GetLastKnownLocation("gps");
-                //_locationManager.GetLastKnownLocation("network");
+                var loc = _locationManager.GetLastKnownLocation("gps");
+                loc = _locationManager.GetLastKnownLocation("network");
 
-                _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
-                _locationManager.RequestLocationUpdates(LocationManager.NetworkProvider, 0, 0, this);
-
-                if (_currentLocation == null)
+                if (loc != null && loc.Time > DateTime.Now.Millisecond - 2 * 60 * 1000)
                 {
-                    //error
-                    System.Diagnostics.Debug.WriteLine("No Location found");
+                    GetCurrentWeather(loc.Latitude, loc.Longitude);
                 }
                 else
                 {
-                    
+                    _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
+                    _locationManager.RequestLocationUpdates(LocationManager.NetworkProvider, 0, 0, this);
                 }
+
             }
             else
             {
                 _locationProvider = string.Empty;
-
-                //LocationSettingsRequest
             }
 
         }
@@ -196,19 +198,9 @@ namespace IsItRaining
             }
             else
             {
-                _addressText.Text = "Unable to determine the address. Try again in a few minutes.";
+
             }
         }
-
-        //private async Task<Address> ReverseGeocodeCurrentLocation()
-        //{
-        //    Geocoder geocoder = new Geocoder(this);
-        //    IList<Address> addressList =
-        //        await geocoder.GetFromLocationAsync(_currentLocation.Latitude, _currentLocation.Longitude, 10);
-
-        //    Address address = addressList.FirstOrDefault();
-        //    return address;
-        //}
 
         private void GetCurrentWeather(double latitde, double longitude)
         {
@@ -219,18 +211,16 @@ namespace IsItRaining
 
                 var request = dk.GetWeatherDataAsync(latitde, longitude);
 
-                foreach(var hrs in request.Result.Hourly.Hours)
-                {
-                    //hrs.
-                }
+                //foreach(var hrs in request.Result.Hourly.Hours)
+                //{
+                    
+                //}
 
                 DisplayAccurateImage(request.Result.Minutely.Icon);
 
                 SetStatus(request.Result.Currently.Icon);
 
                 weatherStatus.Text = request.Result.Minutely.Summary;
-
-                
 
                 if (request.Result.TimeZone.Contains("America"))
                 {
@@ -242,10 +232,6 @@ namespace IsItRaining
                     currentTempurature.Text = toCelsius.ToString() + " \u2103";
                 }
             }
-
-            
-
-            //request.Result.
         }
 
         private void DisplayAccurateImage(string summary)
@@ -307,8 +293,6 @@ namespace IsItRaining
             fadeIn.SetAnimationListener(new AnimationListener(this, linearlayout));
         }
 
-        
-
         private void SetStatus(string summary)
         {
             if (summary.Contains("rain"))
@@ -318,7 +302,7 @@ namespace IsItRaining
             }
             else
             {
-                rainingOrNot.Text = "nahh";
+                rainingOrNot.Text = "nah";
                 AnimateText();
 
             }
@@ -339,43 +323,44 @@ namespace IsItRaining
         protected override void OnResume()
         {
             base.OnResume();
-            //_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+
+            if (_locationManager == null)
+            {
+                InitializeLocationManager();
+            }
+            else
+            {
+                var loc = _locationManager.GetLastKnownLocation("gps");
+                loc = _locationManager.GetLastKnownLocation("network");
+
+                if (loc != null && loc.Time > DateTime.Now.Millisecond - 2 * 60 * 1000)
+                {
+                    GetCurrentWeather(loc.Latitude, loc.Longitude);
+                }
+                else
+                {
+                    _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
+                    _locationManager.RequestLocationUpdates(LocationManager.NetworkProvider, 0, 0, this);
+                }
+            }
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            //_locationManager.RemoveUpdates(this);
         }
 
         public void OnProviderDisabled(string provider)
         {
-            //throw new NotImplementedException();
         }
 
         public void OnProviderEnabled(string provider)
         {
-            //throw new NotImplementedException();
         }
 
         public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
         {
-            //throw new NotImplementedException();
-        }
 
-        async void AddressButton_OnClick(object sender, EventArgs eventArgs)
-        {
-            if (_currentLocation == null)
-            {
-                _addressText.Text = "Can't determine the current address. Try again in a few minutes.";
-                return;
-            }
-            else
-            {
-
-            }
-            //Address address = await ReverseGeocodeCurrentLocation();
-            //DisplayAddress(address);
         }
     }
 }

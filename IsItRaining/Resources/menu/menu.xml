@@ -2,18 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <group android:id="@+id/grp1" android:checkableBehavior="single" >
+  <!--<group android:id="@+id/grp1" android:checkableBehavior="single" >
     <item android:id="@+id/action_edit"
           android:title="Notifications"
           android:icon="@drawable/ic_notification"
 	      />
-  </group>
+  </group>-->
 
   <group android:id="@+id/grp3" android:checkableBehavior="single" >
     <item android:id="@+id/attribution"
           android:title="Attribution"
           android:icon="@drawable/ic_notification"
 	      />
+  </group>
+  <group android:id="@+id/grp1" android:checkableBehavior="single" >
     <item android:id="@+id/feedback"
      android:title="App feedback"
           android:icon="@drawable/ic_plane"

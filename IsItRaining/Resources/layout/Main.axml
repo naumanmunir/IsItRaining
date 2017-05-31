@@ -14,7 +14,8 @@
         <include
             android:id="@+id/custom_toolbar"
             layout="@layout/appBar" />
-        <LinearLayout
+
+      <LinearLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,38 +78,45 @@
                 android:shadowDy="1"
                 android:shadowRadius="15"
                 android:shadowColor="#ff000000" />
-                      <me.grantland.widget.AutofitTextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/testData"
-                android:layout_marginTop="5dp"
-                android:textColor="#e6ffffff"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:maxLines="1"
-                android:gravity="center"
-                android:shadowColor="#ff000000" />
-          
         </LinearLayout>
+
+      <FrameLayout
+android:id="@+id/fragment_container"
+android:layout_width="match_parent"
+android:layout_height="match_parent" />
+      
+        <RelativeLayout
+            android:id="@+id/adContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                app:adSize="BANNER"
+                app:adUnitId="ca-app-pub-2637596544494423/5406247193" />
+        </RelativeLayout>
     </LinearLayout>
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/menu" />
-    <!--<RelativeLayout
-        android:id="@+id/adContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
+    <RelativeLayout
+        android:id="@+id/ratafeia"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start">
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/menu" />
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-2637596544494423/5406247193" />
-    </RelativeLayout>-->
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/umbrella"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
