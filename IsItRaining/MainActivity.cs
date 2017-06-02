@@ -119,8 +119,6 @@ namespace IsItRaining
             
         }
 
-        
-
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             switch (item.ItemId)
@@ -181,24 +179,6 @@ namespace IsItRaining
             else
             {
                 GetCurrentWeather(_currentLocation.Latitude, _currentLocation.Longitude);
-            }
-        }
-
-        private void DisplayAddress(Address address)
-        {
-            if (address != null)
-            {
-                StringBuilder deviceAddress = new StringBuilder();
-                for (int i = 0; i < address.MaxAddressLineIndex; i++)
-                {
-                    deviceAddress.AppendLine(address.GetAddressLine(i));
-                }
-                // Remove the last comma from the end of the address.
-                //_addressText.Text = deviceAddress.ToString();
-            }
-            else
-            {
-
             }
         }
 
