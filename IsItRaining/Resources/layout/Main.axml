@@ -9,86 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/linearlayout1"
-        android:background="@drawable/clear_day_beach">
+        android:id="@+id/linearlayout1">
         <include
             android:id="@+id/custom_toolbar"
             layout="@layout/appBar" />
 
-      <LinearLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="15dp">
-            <me.grantland.widget.AutofitTextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/status"
-                android:textColor="#e6ffffff"
-                android:textAlignment="center"
-                android:textSize="150sp"
-                android:maxLines="1"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="15"
-                android:shadowColor="#ff000000"
-                android:includeFontPadding="false"
-                android:layout_marginBottom="-3dp" />
-            <me.grantland.widget.AutofitTextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/weatherSummary_text"
-                android:layout_below="@+id/content"
-                android:textColor="#e6ffffff"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:maxLines="1"
-                android:gravity="center"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="15"
-                android:shadowColor="#ff000000" />
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tempurature_text"
-                android:textColor="#e6ffffff"
-                android:textAlignment="center"
-                android:textSize="48sp"
-                android:gravity="center"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="15"
-                android:shadowColor="#ff000000" />
-            <me.grantland.widget.AutofitTextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/comments_text"
-                android:layout_marginTop="5dp"
-                android:textColor="#e6ffffff"
-                android:textAlignment="center"
-                android:textSize="70sp"
-                android:maxLines="1"
-                android:gravity="center"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="15"
-                android:shadowColor="#ff000000" />
-        </LinearLayout>
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                
+            android:layout_weight="1"/>
+        
 
-      <FrameLayout
-android:id="@+id/fragment_container"
-android:layout_width="match_parent"
-android:layout_height="match_parent" />
-      
-        <RelativeLayout
-            android:id="@+id/adContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_height="wrap_content"
@@ -97,7 +30,7 @@ android:layout_height="match_parent" />
                 android:layout_alignParentBottom="true"
                 app:adSize="BANNER"
                 app:adUnitId="ca-app-pub-2637596544494423/5406247193" />
-        </RelativeLayout>
+        
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/ratafeia"

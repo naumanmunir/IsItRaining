@@ -9,24 +9,14 @@ using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using Android.Widget;
-using Android.Locations;
-using DarkSkyApi;
-using Android.Views.Animations;
-using IsItRaining.Includes;
+using Android.Support.V7.Widget;
 
 namespace IsItRaining.Fragments
 {
-    public class AttributeFragment : Android.Support.V4.App.Fragment, ILocationListener
+    public class AttributeFragment : Android.Support.V4.App.Fragment
     {
-        TextView weatherStatus;
-        TextView rainingOrNot;
-        TextView currentTempurature;
-        LinearLayout linearlayout;
-
-        static Location _currentLocation;
-        static LocationManager _locationManager;
-        string _locationProvider;
+        CardView darkSkyCardView;
+        View view;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -37,219 +27,43 @@ namespace IsItRaining.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            View view = inflater.Inflate(Resource.Layout.Attribution,
+            view = inflater.Inflate(Resource.Layout.Attribution,
                    container, false);
 
-            weatherStatus = view.FindViewById<TextView>(Resource.Id.weatherSummary_text);
-            rainingOrNot = view.FindViewById<TextView>(Resource.Id.status);
-            currentTempurature = view.FindViewById<TextView>(Resource.Id.tempurature_text);
-            linearlayout = view.FindViewById<LinearLayout>(Resource.Id.linearlayout1);
+            Toolbar toolbar = view.FindViewById<Toolbar>(Resource.Id.custom_toolBar);
+            darkSkyCardView = view.FindViewById<CardView>(Resource.Id.card_view);
 
-            InitializeLocationManager();
-
-            // Use this to return your custom view for this Fragment
+            darkSkyCardView.Click += DarkSkyCardView_Click;
+            
             return view;
 
             //return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
-        private void InitializeLocationManager()
+        private void DarkSkyCardView_Click(object sender, EventArgs e)
         {
-            _locationManager = (LocationManager)Context.GetSystemService(Context.LocationService);
+            var url = Android.Net.Uri.Parse("https://darksky.net/poweredby/");
+            Intent intent = new Intent(Intent.ActionView, url);
+            view.Context.StartActivity(intent);
+        }
+    }
 
-            Criteria criteriaForLocationService = new Criteria
-            {
-                Accuracy = Android.Locations.Accuracy.Fine
-            };
+    internal class CardViewListener : Java.Lang.Object, View.IOnClickListener
+    {
+        Activity Activity;
+        Fragment Fragment;
+        string NavigateURL;
 
-            IList<string> acceptableLocationProviders = _locationManager.GetProviders(criteriaForLocationService, true);
-
-            if (acceptableLocationProviders.Any())
-            {
-                _locationProvider = acceptableLocationProviders.First();
-
-
-                var loc = _locationManager.GetLastKnownLocation("gps");
-                loc = _locationManager.GetLastKnownLocation("network");
-
-                if (loc != null && loc.Time > DateTime.Now.Millisecond - 2 * 60 * 1000)
-                {
-                    GetCurrentWeather(loc.Latitude, loc.Longitude);
-                }
-                else
-                {
-                    _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
-                    _locationManager.RequestLocationUpdates(LocationManager.NetworkProvider, 0, 0, this);
-                }
-
-            }
-            else
-            {
-                _locationProvider = string.Empty;
-            }
-
+        public CardViewListener(Activity act, Fragment frag, string url)
+        {
+            Activity = act;
+            Fragment = frag;
+            NavigateURL = url;
         }
 
-        private void GetCurrentWeather(double latitde, double longitude)
+        public void OnClick(View v)
         {
-            if (latitde != 0 && longitude != 0)
-            {
-                DarkSkyService dk = new DarkSkyService("689a0d61985dfd4dae9cb86f67dcad79");
-
-
-                var request = dk.GetWeatherDataAsync(latitde, longitude);
-
-                DisplayAccurateImage(request.Result.Minutely.Icon);
-
-                //SetStatus(request.Result.Currently.Icon);
-
-                weatherStatus.Text = request.Result.Minutely.Summary;
-
-                if (request.Result.TimeZone.Contains("America"))
-                {
-                    currentTempurature.Text = Math.Round(request.Result.Currently.ApparentTemperature).ToString() + " \u2109";
-                }
-                else
-                {
-                    var toCelsius = (Math.Round(request.Result.Currently.ApparentTemperature) - 32) * (5 / 9);
-                    currentTempurature.Text = toCelsius.ToString() + " \u2103";
-                }
-            }
-        }
-
-        private void DisplayAccurateImage(string summary)
-        {
-            var currentTime = DateTime.Now;
-
-            switch (summary)
-            {
-                case "clear-day":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
-                    AnimateImages();
-                    break;
-                case "clear-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_night);
-                    AnimateImages();
-                    break;
-                case "rain":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.rain);
-                    AnimateImages();
-                    break;
-                case "snow":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
-                    AnimateImages();
-                    break;
-                case "sleet":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
-                    AnimateImages();
-                    break;
-                case "wind":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
-                    AnimateImages();
-                    break;
-                case "fog":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
-                    AnimateImages();
-                    break;
-                case "cloudy":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
-                    AnimateImages();
-                    break;
-                case "partly-cloudy-day":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
-                    AnimateImages();
-                    break;
-                case "partly-cloudy-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
-                    AnimateImages();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void AnimateImages()
-        {
-            //Animation fadeIn = AnimationUtils.LoadAnimation(Context, Resource.Animation.fade_in);
-            //linearlayout.StartAnimation(fadeIn);
-
-            //fadeIn.SetAnimationListener(new AnimationListener(Context, linearlayout));
-        }
-
-        private void SetStatus(string summary)
-        {
-            if (summary.Contains("rain"))
-            {
-                rainingOrNot.Text = "yep";
-                AnimateText();
-            }
-            else
-            {
-                rainingOrNot.Text = "nah";
-                AnimateText();
-
-            }
-        }
-
-        private void AnimateText()
-        {
-            Animation myAnimation = AnimationUtils.LoadAnimation(Context, Resource.Animation.scaling);
-            rainingOrNot.StartAnimation(myAnimation);
-
-            weatherStatus.StartAnimation(myAnimation);
-            rainingOrNot.StartAnimation(myAnimation);
-            currentTempurature.StartAnimation(myAnimation);
-        }
-
-        public void OnLocationChanged(Location location)
-        {
-            _currentLocation = location;
-
-            if (_currentLocation == null)
-            {
-
-            }
-            else
-            {
-                GetCurrentWeather(_currentLocation.Latitude, _currentLocation.Longitude);
-            }
-        }
-
-        public override void OnResume()
-        {
-            base.OnResume();
-
-            if (_locationManager == null)
-            {
-                InitializeLocationManager();
-            }
-            else
-            {
-                var loc = _locationManager.GetLastKnownLocation("gps");
-                loc = _locationManager.GetLastKnownLocation("network");
-
-                if (loc != null && loc.Time > DateTime.Now.Millisecond - 2 * 60 * 1000)
-                {
-                    GetCurrentWeather(loc.Latitude, loc.Longitude);
-                }
-                else
-                {
-                    _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
-                    _locationManager.RequestLocationUpdates(LocationManager.NetworkProvider, 0, 0, this);
-                }
-            }
-        }
-
-        public void OnProviderDisabled(string provider)
-        {
-        }
-
-        public void OnProviderEnabled(string provider)
-        {
-        }
-
-        public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
-        {
+            
         }
     }
 }
