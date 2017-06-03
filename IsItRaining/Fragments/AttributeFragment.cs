@@ -40,30 +40,13 @@ namespace IsItRaining.Fragments
             //return base.OnCreateView(inflater, container, savedInstanceState);
         }
 
+
+
         private void DarkSkyCardView_Click(object sender, EventArgs e)
         {
             var url = Android.Net.Uri.Parse("https://darksky.net/poweredby/");
             Intent intent = new Intent(Intent.ActionView, url);
             view.Context.StartActivity(intent);
-        }
-    }
-
-    internal class CardViewListener : Java.Lang.Object, View.IOnClickListener
-    {
-        Activity Activity;
-        Fragment Fragment;
-        string NavigateURL;
-
-        public CardViewListener(Activity act, Fragment frag, string url)
-        {
-            Activity = act;
-            Fragment = frag;
-            NavigateURL = url;
-        }
-
-        public void OnClick(View v)
-        {
-            
         }
     }
 }

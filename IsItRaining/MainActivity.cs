@@ -24,6 +24,7 @@ using System.IO;
 using Android.Content;
 using Android.Support.Design.Widget;
 using IsItRaining.Fragments;
+using Android.Support.V4.View;
 
 namespace IsItRaining
 {
@@ -37,6 +38,7 @@ namespace IsItRaining
         NavigationView navView;
         public DrawerLayout drawerLayout;
         FrameLayout frameLayout;
+        private Android.Support.V4.App.Fragment currSelectedFrag;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -58,32 +60,65 @@ namespace IsItRaining
             SupportActionBar.SetDisplayShowTitleEnabled(false);
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.ic_menu);
-
+            
             AdRequest adRequest = new AdRequest.Builder().AddTestDevice("Samsung-SM-N900A").Build();
 
             adView.LoadAd(adRequest);
 
             WeatherFragment wfrag = new WeatherFragment();
-            SupportFragmentManager.BeginTransaction().Add(Resource.Id.fragment_container, wfrag).Commit();
+            currSelectedFrag = wfrag;
+            ShowFragment(wfrag);
 
-            SetUpNavigationView();
-
-            //InitializeLocationManager();
-
+            navView.NavigationItemSelected += NavView_NavigationItemSelected;
         }
 
-
-        public override bool OnSupportNavigateUp()
+        private void NavView_NavigationItemSelected(object sender, NavigationView.NavigationItemSelectedEventArgs e)
         {
-            OnBackPressed();
-            return base.OnSupportNavigateUp();
-        }
-
-
-        private void SetUpNavigationView()
-        {
-            navView.SetNavigationItemSelectedListener(new NavigationListener(this));
+            switch (e.MenuItem.ItemId)
+            {
+                case Resource.Id.attribution:
+                    AttributeFragment af = new AttributeFragment();
+                    ShowFragment(af);
+                    break;
+                case Resource.Id.feedback:
+                    EmailIntent();
+                    break;
+                case Resource.Id.rateapp:
+                    StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse("https://play.google.com/store/apps/details?id=com.Jublix.Orca&hl=en")));
+                    break;
+                default:
+                    break;
+            }
             
+            drawerLayout.CloseDrawer(GravityCompat.Start);
+        }
+
+        private void ShowFragment(Android.Support.V4.App.Fragment frag)
+        {
+            if (!frag.IsVisible)
+            {
+                try
+                {
+                    var trans = SupportFragmentManager.BeginTransaction();
+
+                    //trans.SetCustomAnimations(Resource.Animation.right_slide_in, Resource.Animation.right_slide_out, Resource.Animation.right_slide_in, Resource.Animation.right_slide_out);
+
+                    trans.Add(Resource.Id.fragment_container, frag);
+
+                    trans.Hide(currSelectedFrag);
+                    trans.Show(frag);
+                    trans.AddToBackStack(null);
+                    trans.Commit();
+
+                    currSelectedFrag = frag;
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+                
+            }
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -91,7 +126,7 @@ namespace IsItRaining
             switch (item.ItemId)
             {
                 case Android.Resource.Id.Home:
-                    drawerLayout.OpenDrawer(Android.Support.V4.View.GravityCompat.Start);
+                    drawerLayout.OpenDrawer(GravityCompat.Start);
                     return true;
                 default:
                     return base.OnOptionsItemSelected(item);
@@ -100,9 +135,17 @@ namespace IsItRaining
 
         public override void OnBackPressed()
         {
-            base.OnBackPressed();
+            int cnt = SupportFragmentManager.BackStackEntryCount;
 
-            Toast.MakeText(this, "Back pressed!", ToastLength.Long);
+            if (cnt == 1)
+            {
+                Finish();
+            }
+            else
+            {
+                SupportFragmentManager.PopBackStack();
+            }
+            
         }
 
         protected override void OnResume()
@@ -113,6 +156,16 @@ namespace IsItRaining
         protected override void OnPause()
         {
             base.OnPause();
+        }
+
+        private void EmailIntent()
+        {
+            Intent emailIntent = new Intent(Intent.ActionSend);
+            emailIntent.PutExtra(Intent.ExtraEmail, new string[1] { "naumanbmunir@gmail.com" });
+            emailIntent.PutExtra(Intent.ExtraSubject, "Android App Feedback");
+            emailIntent.PutExtra(Intent.ExtraText, "Hi, my suggestion is...");
+            emailIntent.SetType("message/rfc822");
+            StartActivity(emailIntent);
         }
 
         //public void SaveWeatherData()

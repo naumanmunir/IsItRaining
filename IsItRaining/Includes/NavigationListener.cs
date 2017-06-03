@@ -24,18 +24,19 @@ namespace IsItRaining.Includes
             mainActivity = ac;
         }
 
-        public void Dispose()
-        {
-            
-        }
-
         public bool OnNavigationItemSelected(IMenuItem menuItem)
         {
             switch (menuItem.ItemId)
             {
                 case Resource.Id.attribution:
                     AttributeFragment af = new AttributeFragment();
-                    mainActivity.SupportFragmentManager.BeginTransaction().Add(Resource.Id.fragment_container, af).Commit();
+                    //mainActivity.OverridePendingTransition(Resource.Animation.right_slide_in, Resource.Animation.close_scale);
+                    mainActivity.SupportFragmentManager.BeginTransaction().Replace(Resource.Id.fragment_container, af);
+                    mainActivity.SupportFragmentManager.BeginTransaction().AddToBackStack("attribution");
+                    mainActivity.SupportFragmentManager.BeginTransaction().Commit();
+
+                    var g = mainActivity.SupportFragmentManager.BackStackEntryCount;
+                    //mainActivity.SupportFragmentManager.BeginTransaction().Add(Resource.Id.fragment_container, af).Commit();
                     mainActivity.drawerLayout.CloseDrawer(GravityCompat.Start);
                     return true;
                 case Resource.Id.feedback:
@@ -47,5 +48,7 @@ namespace IsItRaining.Includes
 
             return true;
         }
+
+        
     }
 }
