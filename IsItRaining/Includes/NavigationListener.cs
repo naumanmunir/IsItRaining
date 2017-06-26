@@ -31,7 +31,7 @@ namespace IsItRaining.Includes
                 case Resource.Id.attribution:
                     AttributeFragment af = new AttributeFragment();
                     //mainActivity.OverridePendingTransition(Resource.Animation.right_slide_in, Resource.Animation.close_scale);
-                    mainActivity.SupportFragmentManager.BeginTransaction().Replace(Resource.Id.fragment_container, af);
+                    //mainActivity.SupportFragmentManager.BeginTransaction().Replace(Resource.Id.fragment_container, af);
                     mainActivity.SupportFragmentManager.BeginTransaction().AddToBackStack("attribution");
                     mainActivity.SupportFragmentManager.BeginTransaction().Commit();
 

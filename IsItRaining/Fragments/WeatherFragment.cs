@@ -14,6 +14,7 @@ using Android.Locations;
 using Android.Views.Animations;
 using DarkSkyApi;
 using IsItRaining.Includes;
+using Android.Support.V7.App;
 
 namespace IsItRaining.Fragments
 {
@@ -22,7 +23,9 @@ namespace IsItRaining.Fragments
         TextView weatherStatus;
         TextView rainingOrNot;
         TextView currentTempurature;
+        ImageView bgImage;
         LinearLayout linearlayout;
+        Android.Support.V7.Widget.Toolbar toolBar;
 
         static Location _currentLocation;
         static LocationManager _locationManager;
@@ -43,7 +46,18 @@ namespace IsItRaining.Fragments
             weatherStatus = view.FindViewById<TextView>(Resource.Id.weatherSummary_text);
             rainingOrNot = view.FindViewById<TextView>(Resource.Id.status);
             currentTempurature = view.FindViewById<TextView>(Resource.Id.tempurature_text);
-            linearlayout = view.FindViewById<LinearLayout>(Resource.Id.linearlayout1);
+            //linearlayout = view.FindViewById<LinearLayout>(Resource.Id.linearlayout1);
+            //bgImage = view.FindViewById<ImageView>(Resource.Id.bgImage);
+
+            View toolbar_view = view.FindViewById(Resource.Id.custom_toolbar_container_weather);
+            toolBar = view.FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.custom_toolBar);
+
+            ((AppCompatActivity)Activity).SetSupportActionBar(toolBar);
+
+            ((AppCompatActivity)Activity).SupportActionBar.SetDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity)Activity).SupportActionBar.SetDisplayShowTitleEnabled(false);
+            ((AppCompatActivity)Activity).SupportActionBar.SetHomeButtonEnabled(true);
+            ((AppCompatActivity)Activity).SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.ic_menu);
 
             InitializeLocationManager();
 
@@ -98,7 +112,7 @@ namespace IsItRaining.Fragments
 
                 var request = dk.GetWeatherDataAsync(latitde, longitude);
 
-                DisplayAccurateImage(request.Result.Minutely.Icon);
+                //DisplayAccurateImage(request.Result.Minutely.Icon);
 
                 SetStatus(request.Result.Currently.Icon);
 
@@ -123,43 +137,55 @@ namespace IsItRaining.Fragments
             switch (summary)
             {
                 case "clear-day":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day_beach);
                     AnimateImages();
                     break;
                 case "clear-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_night);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_night);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_night);
                     AnimateImages();
                     break;
                 case "rain":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.rain);
+                    bgImage.SetBackgroundResource(Resource.Drawable.rain);
+
                     AnimateImages();
                     break;
                 case "snow":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day);
+
                     AnimateImages();
                     break;
                 case "sleet":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day);
                     AnimateImages();
                     break;
                 case "wind":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day);
                     AnimateImages();
                     break;
                 case "fog":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day);
                     AnimateImages();
                     break;
                 case "cloudy":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.cloudy_day);
                     AnimateImages();
                     break;
                 case "partly-cloudy-day":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.cloudy_day);
+                    bgImage.SetBackgroundResource(Resource.Drawable.cloudy_day);
                     AnimateImages();
                     break;
                 case "partly-cloudy-night":
-                    linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    //linearlayout.SetBackgroundResource(Resource.Drawable.clear_day_beach);
+                    bgImage.SetBackgroundResource(Resource.Drawable.clear_day_beach);
                     AnimateImages();
                     break;
                 default:

@@ -5,24 +5,84 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true">
-    <LinearLayout
-        android:layout_width="match_parent"
+<RelativeLayout
+      android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/linearlayout1">
-        <include
-            android:id="@+id/custom_toolbar"
-            layout="@layout/appBar" />
-
-            <FrameLayout
-                android:id="@+id/fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                
-            android:layout_weight="1"/>
-        
-
-            <com.google.android.gms.ads.AdView
+        >
+    <LinearLayout
+        android:id="@+id/linearlayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/clear_day"
+        android:paddingTop="?android:attr/actionBarSize"
+        android:orientation="vertical">
+        <me.grantland.widget.AutofitTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/status"
+            android:textColor="#e6ffffff"
+            android:textAlignment="center"
+            android:textSize="150sp"
+            android:maxLines="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="15"
+            android:shadowColor="#ff000000"
+            android:includeFontPadding="false"
+            android:layout_marginBottom="-3dp" />
+        <me.grantland.widget.AutofitTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/weatherSummary_text"
+            android:layout_below="@+id/content"
+            android:textColor="#e6ffffff"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:maxLines="1"
+            android:gravity="center"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="15"
+            android:shadowColor="#ff000000" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tempurature_text"
+            android:textColor="#e6ffffff"
+            android:textAlignment="center"
+            android:textSize="48sp"
+            android:gravity="center"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="15"
+            android:shadowColor="#ff000000" />
+        <me.grantland.widget.AutofitTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comments_text"
+            android:layout_marginTop="5dp"
+            android:textColor="#e6ffffff"
+            android:textAlignment="center"
+            android:textSize="70sp"
+            android:maxLines="1"
+            android:gravity="center"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="15"
+            android:shadowColor="#ff000000" />
+    </LinearLayout>
+    <include
+        android:id="@+id/custom_toolbar"
+        layout="@layout/appBar" />
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
@@ -31,20 +91,14 @@
                 app:adSize="BANNER"
                 app:adUnitId="ca-app-pub-2637596544494423/5406247193" />
         
-    </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/ratafeia"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="start">
-        <android.support.design.widget.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:menu="@menu/menu" 
-            />
+    </RelativeLayout>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/menu">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,5 +106,5 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/umbrella"
             android:layout_marginBottom="20dp" />
-    </RelativeLayout>
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>
